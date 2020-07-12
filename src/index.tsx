@@ -14,30 +14,37 @@ class Board extends React.Component {
     renderSquare(i) {
         return (
             <Square
+                key={i}
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
             />
         );
     }
 
+    // renderClassic() {
+    //     return (
+    //         <div>
+    //             for (let row=0; row<3; row++) {
+    //                 for (let column=0; column<3; column++) {
+    //                 this.renderSquare(row*3 + column)
+    //             }
+    //             }
+    //
+    //         </div>
+    //     );
+    // }
+    //
     render() {
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {Array.from({length: 3},
+                    (_, row) =>
+                        <div className="board-row">
+                            {Array.from({length: 3},
+                                (_, column) => this.renderSquare(row * 3 + column)
+                            )}
+                        </div>
+                )}
             </div>
         );
     }
@@ -56,7 +63,7 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber+1);
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
@@ -75,7 +82,7 @@ class Game extends React.Component {
     jumpTo(step) {
         this.setState({
             stepNumber: step,
-            xIsNext: (step %2) === 0,
+            xIsNext: (step % 2) === 0,
         });
     }
 
@@ -113,18 +120,12 @@ class Game extends React.Component {
                 <div className="game-info">
                     <div>{status}</div>
                     <ol>{moves}</ol>
+
                 </div>
             </div>
         );
     }
 }
-
-// ========================================
-
-ReactDOM.render(
-    <Game />,
-    document.getElementById('root')
-);
 
 function calculateWinner(squares) {
     const lines = [
